@@ -23,7 +23,7 @@
   "scripts": {
     "bin": "./bin",
     "build": "bun ./build.ts",
-    "release": "bun run build && np",
+    "release": "bun run build && chmod 744 ./bin && np",
     "lint": "bunx @biomejs/biome check",
     "lint:fix": "bunx @biomejs/biome check --write",
     "test": "echo \"Error: no test specified\""
