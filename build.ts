@@ -1,3 +1,4 @@
+import { chmod } from "node:fs/promises";
 import { build } from "esbuild";
 
 const b = () =>
@@ -14,4 +15,5 @@ const b = () =>
     minify: false,
   });
 
-Promise.all([b()]);
+await Promise.all([b()]);
+await chmod('bin', 744)
