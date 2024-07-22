@@ -16,4 +16,4 @@ const b = () =>
   });
 
 await Promise.all([b()]);
-await chmod('bin', 744)
+await chmod("./bin", 744);
