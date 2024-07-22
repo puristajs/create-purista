@@ -25,7 +25,8 @@
     "build": "bun ./build.ts",
     "release": "np",
     "lint": "bunx @biomejs/biome check",
-    "lint:fix": "bunx @biomejs/biome check --write"
+    "lint:fix": "bunx @biomejs/biome check --write",
+    "test": "echo \"Error: no test specified\""
   },
   "devDependencies": {
     "@inquirer/confirm": "^3.1.17",
