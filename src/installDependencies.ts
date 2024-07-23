@@ -1,9 +1,10 @@
 import { exec } from "node:child_process";
 import { chdir, exit } from "node:process";
 import select from "@inquirer/select";
+import chalk from "chalk";
 import { execa } from "execa";
 import { createSpinner } from "nanospinner";
-import type { PackageManager } from "./types.js";
+import type { PackageManager, Settings } from "./types.js";
 
 const knownPackageManagers: { [key: string]: string } = {
   npm: "npm install",
@@ -11,6 +12,21 @@ const knownPackageManagers: { [key: string]: string } = {
   pnpm: "pnpm install",
   yarn: "yarn",
 };
+
+const installEslintCmd: { [key: string]: string } = {
+  npm: "npm init @eslint/config@latest",
+  bun: "bun create @eslint/config@latest",
+  pnpm: "pnpm create @eslint/config@latest",
+  yarn: "yarn create @eslint/config@latest",
+};
+
+const installBiomeCmd: { [key: string]: string } = {
+  npm: "npm install --save-dev --save-exact @biomejs/biome && npx @biomejs/biome init",
+  bun: "bun add --dev --exact @biomejs/biome && bunx biome init",
+  pnpm: "pnpm add --save-dev --save-exact @biomejs/biome && pnpm biome init",
+  yarn: "yarn add --dev --exact @biomejs/biome && yarn biome init",
+};
+
 const knownPackageManagerNames = Object.keys(knownPackageManagers);
 
 function getCurrentPackageManager(): PackageManager {
@@ -34,8 +50,8 @@ function checkPackageManagerInstalled(packageManager: string) {
 }
 
 export const installDependencies = async (
-  pmArg: PackageManager,
-  directoryPath: string,
+  pmArg: PackageManager | undefined,
+  settings: Settings,
 ) => {
   const installedPackageManagerNames = await Promise.all(
     knownPackageManagerNames.map(checkPackageManagerInstalled),
@@ -60,26 +76,49 @@ export const installDependencies = async (
     });
   }
 
-  chdir(directoryPath);
+  chdir(settings.target);
 
   if (!knownPackageManagers[packageManager]) {
     exit(1);
   }
 
-  const spinner = createSpinner("Installing project dependencies").start();
-  const proc = exec(knownPackageManagers[packageManager]);
+  const spinnerDeps = createSpinner("Installing project dependencies").start();
+  const procDeps = exec(knownPackageManagers[packageManager]);
+  procDeps.stdout?.pipe(process.stdout);
 
-  const procExit: number = await new Promise((res) => {
-    proc.on("exit", (code) => res(code == null ? 0xff : code));
+  const procDepsExit: number = await new Promise((res) => {
+    procDeps.on("exit", (code) => res(code == null ? 0xff : code));
   });
 
-  if (procExit === 0) {
-    spinner.success();
+  if (procDepsExit === 0) {
+    spinnerDeps.success();
   } else {
-    spinner.stop({
+    spinnerDeps.stop({
       mark: chalk.red("×"),
       text: "Failed to install project dependencies",
     });
-    exit(procExit);
+    exit(procDepsExit);
+  }
+
+  if (settings.linter !== "none") {
+    const spinnerLint = createSpinner("Installing linter").start();
+    const linterCmd =
+      settings.linter === "biome" ? installBiomeCmd : installEslintCmd;
+    const procLint = exec(linterCmd[packageManager]);
+    procLint.stdout?.pipe(process.stdout);
+
+    const procLintExit: number = await new Promise((res) => {
+      procLint.on("exit", (code) => res(code == null ? 0xff : code));
+    });
+
+    if (procLintExit === 0) {
+      spinnerLint.success();
+    } else {
+      spinnerLint.stop({
+        mark: chalk.red("×"),
+        text: "Failed to install linter",
+      });
+      exit(procLintExit);
+    }
   }
 };

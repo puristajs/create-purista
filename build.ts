@@ -11,7 +11,7 @@ const b = () =>
     outfile: "bin",
     format: "cjs",
     // For debug
-    minify: false,
+    minify: true,
   });
 
 await Promise.all([b()]);

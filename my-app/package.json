@@ -1,0 +1,26 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@purista/core": "latest"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@types/bun": "latest",
+    "@types/node": "latest",
+    "sinon": "latest",
+    "typescript": "latest"
+  },
+  "scripts": {
+    "start": "bun src/index.ts",
+    "dev": "bun --watch run src/index.ts",
+    "test": "bun test"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
+}

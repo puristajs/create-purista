@@ -11,6 +11,11 @@ const runtimes = [
   { value: "bun", name: "Bun" },
 ];
 
+const moduleTypes = [
+  { value: "module", name: "ESM" },
+  { value: "commonjs", name: "CommonJS" },
+];
+
 const bridges = [
   {
     value: "default",
@@ -27,6 +32,42 @@ const bridges = [
   { value: "dapr", name: "Dapr", description: "Dapr Runtime" },
 ];
 
+const fileConvetions = [
+  {
+    value: "camel",
+    name: "camel case",
+    description: "myFileInCamelCase.ts",
+  },
+  {
+    value: "snake",
+    name: "snake case",
+    description: "my_file_in_snake_case.ts",
+  },
+  {
+    value: "kebab",
+    name: "kebab case",
+    description: "my-file-in-snake-case.ts",
+  },
+];
+
+const linters = [
+  {
+    value: "biome",
+    name: "Biome",
+    description: "https://biomejs.dev/",
+  },
+  {
+    value: "eslint",
+    name: "ESLint",
+    description: "https://eslint.org/",
+  },
+  {
+    value: "none",
+    name: "DO not install a linter",
+    description: "https://eslint.org/",
+  },
+];
+
 export const getSettings = async (args: Arguments) => {
   const config: Settings = {
     target: "",
@@ -34,6 +75,9 @@ export const getSettings = async (args: Arguments) => {
     runtime: "node",
     eventBridge: "default",
     useWebserver: true,
+    fileConvention: "camel",
+    linter: "biome",
+    type: "module",
   };
 
   console.log(chalk.gray(`create-purista version ${version}`));
@@ -65,6 +109,33 @@ export const getSettings = async (args: Arguments) => {
       loop: true,
       message: "Which runtime do you use?",
       choices: runtimes,
+      default: 0,
+    }));
+
+  config.type =
+    templateArg ||
+    (await select({
+      loop: true,
+      message: "Do you want to create an ESM or CommonJS?",
+      choices: moduleTypes,
+      default: 0,
+    }));
+
+  config.fileConvention =
+    templateArg ||
+    (await select({
+      loop: true,
+      message: "Which file naming convention do you prefer?",
+      choices: fileConvetions,
+      default: 0,
+    }));
+
+  config.linter =
+    templateArg ||
+    (await select({
+      loop: true,
+      message: "Which linter and code prettifier do you prefer?",
+      choices: linters,
       default: 0,
     }));
 

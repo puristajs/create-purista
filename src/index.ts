@@ -7,16 +7,14 @@ import { installDependencies } from "./installDependencies.js";
 
 async function main() {
   const args = yargsParser(process.argv.slice(2));
-
-  //const { install, pm } = args;
-  //console.log(install, pm);
+  const { pm } = args;
 
   const settings = await getSettings(args);
 
   await ensureProjectDir(settings);
   await initFiles(settings);
-  const p = "";
-  await installDependencies("npm", settings.target);
+
+  await installDependencies(settings.runtime === "bun" ? "bun" : pm, settings);
 
   console.log(chalk.green(`🎉 ${chalk.bold("Copied project files")}`));
   console.log(
