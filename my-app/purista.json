@@ -1,6 +1,0 @@
-{
-  "fileConvention": "camel",
-  "runtime": "bun",
-  "eventBridge": "default",
-  "linter": "biome"
-}
