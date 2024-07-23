@@ -1,15 +1,15 @@
-import { type Service, gracefulShutdown, initLogger } from "@purista/core";
+import { type Service, gracefulShutdown, initLogger } from '@purista/core'
 // IMPORT
 
 export const main = async () => {
-  const logger = initLogger();
+	const logger = initLogger()
 
-  // EVENT_BRIDGE
+	// EVENT_BRIDGE
 
-  const services: Service[] = [];
+	const services: Service[] = []
 
-  // try to shut down as clean as possible
-  gracefulShutdown(logger, [eventBridge, ...services]);
-};
+	// try to shut down as clean as possible
+	gracefulShutdown(logger, [eventBridge, ...services])
+}
 
-main();
+main()
