@@ -1,102 +1,109 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import type { PackageJson } from 'type-fest'
 import type { Settings } from './types.js'
 
-const bunDefaultScripts = {
-	start: 'bun src/index.ts',
-	dev: 'bun --watch run src/index.ts',
-	test: 'bun test',
-}
+export type PKG = PackageJson & { trustedDependencies?: string[] }
 
-const nodeDefaultScripts = {
-	start: 'tsx src/index.ts',
-	dev: 'tsx watch src/index.ts',
-	test: 'vitest',
-}
-
-const nodeDeps = {
-	tsx: 'latest',
-	vitest: 'latest',
-}
-
-const bunDeps = {}
-
-const nodeDevDeps = {
-	tsx: 'latest',
-	vitest: 'latest',
-}
-
-const bunDevDeps = {
-	'@types/bun': 'latest',
-}
-
-const eventBrigeDeps = {
-	default: {
-		scripts: {},
-		dependencies: {},
-		devDependencies: {},
+const bunPackage: PKG = {
+	scripts: {
+		start: 'bun src/index.ts',
+		dev: 'bun --watch run src/index.ts',
+		test: 'bun test',
 	},
-	mqtt: {
-		scripts: {},
-		dependencies: {
-			'@purista/mqttbridge': 'latest',
-		},
-		devDependencies: {},
+	dependencies: {},
+	devDependencies: {
+		'@types/bun': 'latest',
 	},
-	amqp: {
-		scripts: {},
-		dependencies: {
-			'@purista/amqpbridge': 'latest',
-		},
-		devDependencies: {},
-	},
-	nats: {
-		scripts: {},
-		dependencies: {
-			'@purista/natsbridge': 'latest',
-		},
-		devDependencies: {},
-	},
-	dapr: {
-		scripts: {},
-		dependencies: {},
-		devDependencies: {},
-	},
+	trustedDependencies: [],
 }
 
-export const getPackageJson = (input: PackageJson, settings: Settings) => {
-	const scripts = settings.runtime === 'node' ? nodeDefaultScripts : bunDefaultScripts
-	const deps = settings.runtime === 'node' ? nodeDeps : bunDeps
-	const devDeps = settings.runtime === 'node' ? nodeDevDeps : bunDevDeps
+const nodePackage: PKG = {
+	scripts: {
+		start: 'tsx src/index.ts',
+		dev: 'tsx watch src/index.ts',
+		test: 'vitest',
+	},
+	dependencies: {},
+	devDependencies: {
+		tsx: 'latest',
+		vitest: 'latest',
+	},
+	trustedDependencies: [],
+}
 
-	const bridgePkg = eventBrigeDeps[settings.eventBridge] ?? eventBrigeDeps.default
+const biomePkg: PKG = {
+	scripts: {
+		lint: 'bunx @biomejs/biome check',
+		'lint:fix': 'bunx @biomejs/biome check --write',
+	},
+	dependencies: {},
+	devDependencies: {
+		'@biomejs/biome': '^1.8.3',
+	},
+	trustedDependencies: ['@biomejs/biome'],
+}
 
-	const trustedDependencies = []
-	if (settings.linter === 'biome') {
-		trustedDependencies.push('@biomejs/biome')
-	}
+const eslintPkg: PKG = {
+	scripts: {
+		lint: 'eslint',
+		'lint:fix': 'eslint --fix',
+	},
+	dependencies: {},
+	devDependencies: {
+		'@eslint/js': '^9.7.0',
+		eslint: '^9.7.0',
+		globals: '^15.8.0',
+		'typescript-eslint': '^7.17.0',
+	},
+	trustedDependencies: [],
+}
+
+export const mergePackageJson = (inputPkg: PKG, mergePkg: PKG): PKG => {
+	const trustedDependencies = [...(inputPkg.trustedDependencies ?? []), ...(mergePkg.trustedDependencies ?? [])]
 
 	const newPackageJson = {
-		name: settings.projectName,
-		...input,
-		...bridgePkg,
-		type: settings.type,
+		...inputPkg,
+		...mergePkg,
 		trustedDependencies,
 		scripts: {
-			...input.scripts,
-			...scripts,
-			...bridgePkg.scripts,
+			...inputPkg.scripts,
+			...mergePkg.scripts,
 		},
 		dependencies: {
-			...input.dependencies,
-			...deps,
-			...bridgePkg.dependencies,
+			...inputPkg.dependencies,
+			...mergePkg.dependencies,
 		},
 		devDependencies: {
-			...input.devDependencies,
-			...devDeps,
-			...bridgePkg.devDependencies,
+			...inputPkg.devDependencies,
+			...mergePkg.dependencies,
 		},
+	}
+
+	return newPackageJson as PKG
+}
+
+export const getPackageJson = (settings: Settings) => {
+	const runtimePkg = settings.runtime === 'node' ? nodePackage : bunPackage
+
+	let newPackageJson = runtimePkg
+
+	if (settings.linter === 'eslint') {
+		newPackageJson = mergePackageJson(newPackageJson, eslintPkg)
+	}
+	if (settings.linter === 'biome') {
+		newPackageJson = mergePackageJson(newPackageJson, biomePkg)
 	}
 
 	return newPackageJson
+}
+
+export const writePackageJson = (targetDirectoryPath: string, pkg: PKG) => {
+	const packageJsonPath = path.join(targetDirectoryPath, 'package.json')
+
+	if (fs.existsSync(packageJsonPath)) {
+		const packageJson = fs.readFileSync(packageJsonPath, 'utf-8')
+		const newPackageJson = mergePackageJson(JSON.parse(packageJson), pkg)
+		fs.writeFileSync(packageJsonPath, JSON.stringify(newPackageJson, null, 2))
+	}
 }

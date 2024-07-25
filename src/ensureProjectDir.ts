@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import confirm from '@inquirer/confirm'
 import type { Settings } from './types.js'
 
-function mkdirp(dir: string) {
+export function mkdirp(dir: string) {
 	try {
 		fs.mkdirSync(dir, { recursive: true })
 	} catch (e) {

@@ -1,53 +1,45 @@
 {
-  "name": "create-purista",
-  "version": "1.0.2-0",
-  "description": "Init a PURISTA project",
-  "author": "Sebastian Wessel",
-  "keywords": [
-    "purista",
-    "framework",
-    "typescript"
-  ],
-  "bin": "./bin",
-  "files": [
-    "bin"
-  ],
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org",
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/puristajs/create-purista.git"
-  },
-  "scripts": {
-    "bin": "./bin",
-    "build": "bun ./build.ts",
-    "release": "bun run build && chmod 744 ./bin && np",
-    "lint": "bunx @biomejs/biome check",
-    "lint:fix": "bunx @biomejs/biome check --write",
-    "test": "echo \"Error: no test specified\""
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "@inquirer/confirm": "^3.1.17",
-    "@inquirer/input": "^2.2.4",
-    "@inquirer/select": "^2.4.2",
-    "@types/node": "^20.14.12",
-    "@types/yargs-parser": "^21.0.3",
-    "chalk": "^5.3.0",
-    "esbuild": "^0.23.0",
-    "execa": "^8.0.1",
-    "nanospinner": "^1.1.0",
-    "np": "^10.0.7",
-    "tiged": "^2.12.7",
-    "type-fest": "^4.23.0",
-    "typescript": "^5.5.4",
-    "yargs-parser": "^21.1.1"
-  },
-  "license": "MIT",
-  "trustedDependencies": [
-    "core-js",
-    "@biomejs/biome"
-  ]
+	"name": "create-purista",
+	"version": "1.0.2-0",
+	"description": "Init a PURISTA project",
+	"author": "Sebastian Wessel",
+	"keywords": ["purista", "framework", "typescript"],
+	"bin": "./bin",
+	"files": ["bin"],
+	"publishConfig": {
+		"registry": "https://registry.npmjs.org",
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/puristajs/create-purista.git"
+	},
+	"scripts": {
+		"bin": "./bin",
+		"build": "bun ./build.ts",
+		"release": "bun run build && chmod 744 ./bin && np",
+		"lint": "bunx @biomejs/biome check",
+		"lint:fix": "bunx @biomejs/biome check --write",
+		"test": "echo \"Error: no test specified\""
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.8.3",
+		"@inquirer/confirm": "^3.1.17",
+		"@inquirer/input": "^2.2.4",
+		"@inquirer/select": "^2.4.2",
+		"@types/node": "^20.14.12",
+		"@types/yargs-parser": "^21.0.3",
+		"chalk": "^5.3.0",
+		"change-case": "^5.4.4",
+		"esbuild": "^0.23.0",
+		"execa": "^8.0.1",
+		"nanospinner": "^1.1.0",
+		"np": "^10.0.7",
+		"tiged": "^2.12.7",
+		"type-fest": "^4.23.0",
+		"typescript": "^5.5.4",
+		"yargs-parser": "^21.1.1"
+	},
+	"license": "MIT",
+	"trustedDependencies": ["core-js", "@biomejs/biome"]
 }
