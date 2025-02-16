@@ -15,9 +15,7 @@ export const initFiles = async (settings: Settings) => {
 		await createRegularBridges(targetDirectoryPath, settings)
 	}
 
-	const packageJsonPath = path.join(targetDirectoryPath, 'package.json')
-
-	writePackageJson(packageJsonPath, getPackageJson(settings))
+	writePackageJson(targetDirectoryPath, getPackageJson(settings))
 
 	await setPuristaConfig(settings, targetDirectoryPath)
 }

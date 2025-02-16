@@ -8,8 +8,9 @@ export type PKG = PackageJson & { trustedDependencies?: string[] }
 const bunPackage: PKG = {
 	scripts: {
 		start: 'bun src/index.ts',
+		build: 'tsc',
 		dev: 'bun --watch run src/index.ts',
-		test: 'bun test',
+		test: 'tsc --noEmit && bun test',
 	},
 	dependencies: {},
 	devDependencies: {
@@ -21,40 +22,14 @@ const bunPackage: PKG = {
 const nodePackage: PKG = {
 	scripts: {
 		start: 'tsx src/index.ts',
+		build: 'tsc',
 		dev: 'tsx watch src/index.ts',
-		test: 'vitest',
+		test: 'tsc --noEmit && vitest',
 	},
 	dependencies: {},
 	devDependencies: {
 		tsx: 'latest',
 		vitest: 'latest',
-	},
-	trustedDependencies: [],
-}
-
-const biomePkg: PKG = {
-	scripts: {
-		lint: 'bunx @biomejs/biome check',
-		'lint:fix': 'bunx @biomejs/biome check --write',
-	},
-	dependencies: {},
-	devDependencies: {
-		'@biomejs/biome': '^1.8.3',
-	},
-	trustedDependencies: ['@biomejs/biome'],
-}
-
-const eslintPkg: PKG = {
-	scripts: {
-		lint: 'eslint',
-		'lint:fix': 'eslint --fix',
-	},
-	dependencies: {},
-	devDependencies: {
-		'@eslint/js': '^9.7.0',
-		eslint: '^9.7.0',
-		globals: '^15.8.0',
-		'typescript-eslint': '^7.17.0',
 	},
 	trustedDependencies: [],
 }
@@ -76,26 +51,21 @@ export const mergePackageJson = (inputPkg: PKG, mergePkg: PKG): PKG => {
 		},
 		devDependencies: {
 			...inputPkg.devDependencies,
-			...mergePkg.dependencies,
+			...mergePkg.devDependencies,
 		},
 	}
 
 	return newPackageJson as PKG
 }
 
-export const getPackageJson = (settings: Settings) => {
+export const getPackageJson = (settings: Settings): PKG => {
 	const runtimePkg = settings.runtime === 'node' ? nodePackage : bunPackage
 
-	let newPackageJson = runtimePkg
-
-	if (settings.linter === 'eslint') {
-		newPackageJson = mergePackageJson(newPackageJson, eslintPkg)
-	}
-	if (settings.linter === 'biome') {
-		newPackageJson = mergePackageJson(newPackageJson, biomePkg)
-	}
-
-	return newPackageJson
+	return {
+		name: settings.projectName,
+		...runtimePkg,
+		type: settings.type,
+	} as PKG
 }
 
 export const writePackageJson = (targetDirectoryPath: string, pkg: PKG) => {
@@ -105,5 +75,7 @@ export const writePackageJson = (targetDirectoryPath: string, pkg: PKG) => {
 		const packageJson = fs.readFileSync(packageJsonPath, 'utf-8')
 		const newPackageJson = mergePackageJson(JSON.parse(packageJson), pkg)
 		fs.writeFileSync(packageJsonPath, JSON.stringify(newPackageJson, null, 2))
+	} else {
+		fs.writeFileSync(packageJsonPath, JSON.stringify(pkg, null, 2))
 	}
 }

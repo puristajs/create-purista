@@ -10,7 +10,6 @@ const b = () =>
 		platform: 'node',
 		outfile: 'bin',
 		format: 'cjs',
-		// For debug
 		minify: true,
 	})
 

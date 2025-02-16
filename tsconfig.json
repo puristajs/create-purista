@@ -8,5 +8,6 @@
 		"strict": true,
 		"types": ["node"],
 		"lib": ["esnext"]
-	}
+	},
+	"exclude": ["my-app"]
 }

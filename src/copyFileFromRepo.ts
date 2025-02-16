@@ -1,26 +1,36 @@
 import fs from 'node:fs'
-import path from 'node:path'
+import path, { join } from 'node:path'
 
+import { rewriteLocalImportPaths } from './convertString.js'
 import { type PKG, writePackageJson } from './getPackageJson.js'
 import { templateConig } from './templateConig.js'
+import type { Settings } from './types.js'
 
-export const copyFileFromRepo = async (sourcePath: string, dest: string) => {
+export const copyFileFromRepo = async (
+	settings: Settings,
+	targetDirectoryPath: string,
+	sourcePath: string,
+	destination: string,
+) => {
 	const url = `https://raw.githubusercontent.com/${templateConig.user}/${templateConig.repository}/${templateConig.ref}/${sourcePath}`
 	const resp = await fetch(url)
 	if (!resp.ok) {
-		console.error('Unable to load default config for event bridge')
+		console.error(`Unable to load ${sourcePath}`)
 		return
 	}
+
+	const dest = join(targetDirectoryPath, destination)
+
 	const p = path.dirname(dest)
 	fs.mkdirSync(p, { recursive: true })
 
 	if (dest.endsWith('package.json')) {
 		const content = (await resp.json()) as PKG
-		writePackageJson(path.basename(dest), content)
+		writePackageJson(path.dirname(dest), content)
 		return
 	}
 
 	const content = await resp.text()
 
-	fs.writeFileSync(dest, content)
+	fs.writeFileSync(dest, rewriteLocalImportPaths(settings, content))
 }

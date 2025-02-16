@@ -1,8 +1,8 @@
+import path from 'node:path'
 import input from '@inquirer/input'
 import select from '@inquirer/select'
 import chalk from 'chalk'
 import { execa } from 'execa'
-import path from 'node:path'
 import type { Arguments } from 'yargs-parser'
 import { version } from '../package.json'
 import type { PackageManager, Settings } from './types.js'
@@ -49,6 +49,64 @@ const fileConvetions = [
 		name: 'kebab case',
 		description: 'my-file-in-snake-case.ts',
 	},
+	{
+		value: 'pascal',
+		name: 'pascal case',
+		description: 'MyFileInPascalCase.ts',
+	},
+	{
+		value: 'pascalSnake',
+		name: 'pascal snake case',
+		description: 'My_File_In_Pascal_Case.ts',
+	},
+]
+
+const eventConvetions = [
+	{
+		value: 'camel',
+		name: 'camel case',
+		description: 'myEvent',
+	},
+	{
+		value: 'snake',
+		name: 'snake case',
+		description: 'my_event',
+	},
+	{
+		value: 'kebab',
+		name: 'kebab case',
+		description: 'my-event',
+	},
+	{
+		value: 'pascal',
+		name: 'pascal case',
+		description: 'MyEvent',
+	},
+	{
+		value: 'pascalSnake',
+		name: 'pascal snake case',
+		description: 'My_Event',
+	},
+	{
+		value: 'constantCase',
+		name: 'constant case',
+		description: 'MY_EVENT',
+	},
+	{
+		value: 'constantCase',
+		name: 'dot case',
+		description: 'my.event',
+	},
+	{
+		value: 'pathCase',
+		name: 'path case',
+		description: 'my/event',
+	},
+	{
+		value: 'trainCase',
+		name: 'train case',
+		description: 'My-Event',
+	},
 ]
 
 const linters = [
@@ -94,12 +152,14 @@ function checkPackageManagerInstalled(packageManager: string) {
 export const getSettings = async (args: Arguments) => {
 	const config: Settings = {
 		target: '',
-		projectName: 'my-app',
+		projectName: 'purista-app',
 		runtime: 'node',
 		eventBridge: 'default',
 		useWebserver: false,
 		fileConvention: 'camel',
+		eventConvention: 'camel',
 		linter: 'biome',
+		formatter: 'biome',
 		type: 'module',
 		packageManager: 'npm',
 	}
@@ -142,11 +202,11 @@ export const getSettings = async (args: Arguments) => {
 		console.error('Looks like no package manager is installed')
 	}
 
-  if (pm && installedPackageManagerNames.includes(pm)) {
-    config.packageManager = pm
-  } else if (config.runtime==='bun' && installedPackageManagerNames.includes('bun')) {
-    config.packageManager='bun'
-  } else{
+	if (pm && installedPackageManagerNames.includes(pm)) {
+		config.packageManager = pm
+	} else if (config.runtime === 'bun' && installedPackageManagerNames.includes('bun')) {
+		config.packageManager = 'bun'
+	} else {
 		config.packageManager = await select({
 			message: 'Which package manager do you want to use?',
 			choices: installedPackageManagerNames.map((template: string) => ({
@@ -172,6 +232,15 @@ export const getSettings = async (args: Arguments) => {
 			loop: true,
 			message: 'Which file naming convention do you prefer?',
 			choices: fileConvetions,
+			default: 0,
+		}))
+
+	config.eventConvention =
+		templateArg ||
+		(await select({
+			loop: true,
+			message: 'Which naming convention should be used for events?',
+			choices: eventConvetions,
 			default: 0,
 		}))
 

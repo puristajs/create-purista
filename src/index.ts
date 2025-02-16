@@ -14,10 +14,12 @@ async function main() {
 	await ensureProjectDir(settings)
 	await initFiles(settings)
 
-	await installDependencies(settings.runtime === 'bun' ? 'bun' : pm, settings)
+	await installDependencies(settings.packageManager, settings)
 
 	console.log(chalk.green(`🎉 ${chalk.bold('Copied project files')}`))
-	console.log(chalk.gray('Get started with:'), chalk.bold(`cd ${settings.target}`))
+	if (settings.target !== '.') {
+		console.log(chalk.gray('Get started with:'), chalk.bold(`cd ${settings.target}`))
+	}
 }
 
 main()

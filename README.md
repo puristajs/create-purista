@@ -2,6 +2,28 @@
 
 This repository contains the installer for a new PURISTA based application.
 
+```sh
+npm create purista
+```
+
+**OR with Bun**
+
+```sh
+bun create purista
+```
+
+**OR with pnpm**
+
+```sh
+yarn create purista
+```
+
+**OR with pnpm**
+
+```sh
+pnpm create purista
+```
+
 ---
 
 - Official Website: **[purista.dev](https://purista.dev)**
