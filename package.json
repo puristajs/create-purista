@@ -1,62 +1,62 @@
 {
-	"name": "create-purista",
-	"version": "2.0.1",
-	"description": "Init a PURISTA project",
-	"author": "Sebastian Wessel",
-	"keywords": [
-		"purista",
-		"framework",
-		"typescript"
-	],
-	"bin": {
-		"reate-purista": "./bin"
-	},
-	"files": [
-		"bin"
-	],
-	"homepage": "https://purista.dev",
-	"publishConfig": {
-		"registry": "https://registry.npmjs.org"
-	},
-	"licenses": [
-		{
-			"type": "MIT",
-			"url": "https://www.opensource.org/licenses/mit-license.php"
-		}
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/puristajs/create-purista.git"
-	},
-	"scripts": {
-		"bin": "./bin",
-		"build": "tsc --noEmit && bun run lint && bun ./build.ts && chmod +x ./bin ",
-		"release": "bun run build && np",
-		"lint": "bunx @biomejs/biome check",
-		"lint:fix": "bunx @biomejs/biome check --write",
-		"test": "echo \"Error: no test specified\""
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@inquirer/confirm": "^5.1.6",
-		"@inquirer/input": "^4.1.6",
-		"@inquirer/select": "^4.0.9",
-		"@types/node": "^22.13.4",
-		"@types/yargs-parser": "^21.0.3",
-		"chalk": "^5.4.1",
-		"change-case": "^5.4.4",
-		"esbuild": "^0.25.0",
-		"execa": "^9.5.2",
-		"nanospinner": "^1.2.2",
-		"np": "^10.2.0",
-		"tiged": "^2.12.7",
-		"type-fest": "^4.35.0",
-		"typescript": "^5.7.3",
-		"yargs-parser": "^21.1.1"
-	},
-	"license": "MIT",
-	"trustedDependencies": [
-		"core-js",
-		"@biomejs/biome"
-	]
+  "name": "create-purista",
+  "version": "2.0.1",
+  "description": "Init a PURISTA project",
+  "author": "Sebastian Wessel",
+  "keywords": [
+    "purista",
+    "framework",
+    "typescript"
+  ],
+  "bin": {
+    "create-purista": "./bin"
+  },
+  "files": [
+    "bin"
+  ],
+  "homepage": "https://purista.dev",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://www.opensource.org/licenses/mit-license.php"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/puristajs/create-purista.git"
+  },
+  "scripts": {
+    "bin": "./bin",
+    "build": "tsc --noEmit && bun run lint && bun ./build.ts && chmod +x ./bin ",
+    "release": "bun run build && np",
+    "lint": "bunx @biomejs/biome check",
+    "lint:fix": "bunx @biomejs/biome check --write",
+    "test": "echo \"Error: no test specified\""
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@inquirer/confirm": "^5.1.6",
+    "@inquirer/input": "^4.1.6",
+    "@inquirer/select": "^4.0.9",
+    "@types/node": "^22.13.4",
+    "@types/yargs-parser": "^21.0.3",
+    "chalk": "^5.4.1",
+    "change-case": "^5.4.4",
+    "esbuild": "^0.25.0",
+    "execa": "^9.5.2",
+    "nanospinner": "^1.2.2",
+    "np": "^10.2.0",
+    "tiged": "^2.12.7",
+    "type-fest": "^4.35.0",
+    "typescript": "^5.7.3",
+    "yargs-parser": "^21.1.1"
+  },
+  "license": "MIT",
+  "trustedDependencies": [
+    "core-js",
+    "@biomejs/biome"
+  ]
 }
