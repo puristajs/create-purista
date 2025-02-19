@@ -1,13 +1,19 @@
 {
 	"name": "create-purista",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Init a PURISTA project",
 	"author": "Sebastian Wessel",
-	"keywords": ["purista", "framework", "typescript"],
+	"keywords": [
+		"purista",
+		"framework",
+		"typescript"
+	],
 	"bin": {
 		"reate-purista": "./bin"
 	},
-	"files": ["bin"],
+	"files": [
+		"bin"
+	],
 	"homepage": "https://purista.dev",
 	"publishConfig": {
 		"registry": "https://registry.npmjs.org"
@@ -49,5 +55,8 @@
 		"yargs-parser": "^21.1.1"
 	},
 	"license": "MIT",
-	"trustedDependencies": ["core-js", "@biomejs/biome"]
+	"trustedDependencies": [
+		"core-js",
+		"@biomejs/biome"
+	]
 }
