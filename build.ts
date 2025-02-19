@@ -8,7 +8,7 @@ const b = () =>
 			js: '#!/usr/bin/env node',
 		},
 		platform: 'node',
-		outfile: 'bin',
+		outfile: 'bin.js',
 		format: 'cjs',
 		minify: true,
 	})
