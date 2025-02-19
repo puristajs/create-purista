@@ -3,26 +3,28 @@
 	"version": "2.0.0",
 	"description": "Init a PURISTA project",
 	"author": "Sebastian Wessel",
-	"keywords": [
-		"purista",
-		"framework",
-		"typescript"
-	],
-	"bin": "./bin",
-	"files": [
-		"bin"
-	],
-	"publishConfig": {
-		"registry": "https://registry.npmjs.org",
-		"access": "public"
+	"keywords": ["purista", "framework", "typescript"],
+	"bin": {
+		"reate-purista": "./bin"
 	},
+	"files": ["bin"],
+	"homepage": "https://purista.dev",
+	"publishConfig": {
+		"registry": "https://registry.npmjs.org"
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://www.opensource.org/licenses/mit-license.php"
+		}
+	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/puristajs/create-purista.git"
 	},
 	"scripts": {
 		"bin": "./bin",
-		"build": "tsc --noEmit && bun run lint && bun ./build.ts && chmod 744 ./bin ",
+		"build": "tsc --noEmit && bun run lint && bun ./build.ts && chmod +x ./bin ",
 		"release": "bun run build && np",
 		"lint": "bunx @biomejs/biome check",
 		"lint:fix": "bunx @biomejs/biome check --write",
@@ -47,8 +49,5 @@
 		"yargs-parser": "^21.1.1"
 	},
 	"license": "MIT",
-	"trustedDependencies": [
-		"core-js",
-		"@biomejs/biome"
-	]
+	"trustedDependencies": ["core-js", "@biomejs/biome"]
 }
