@@ -3,7 +3,7 @@ import path, { join } from 'node:path'
 
 import { rewriteLocalImportPaths } from './convertString.js'
 import { type PKG, writePackageJson } from './getPackageJson.js'
-import { templateConig } from './templateConig.js'
+import { templateConfig } from './templateConfig.js'
 import type { Settings } from './types.js'
 
 export const copyFileFromRepo = async (
@@ -12,7 +12,7 @@ export const copyFileFromRepo = async (
 	sourcePath: string,
 	destination: string,
 ) => {
-	const url = `https://raw.githubusercontent.com/${templateConig.user}/${templateConig.repository}/${templateConig.ref}/${sourcePath}`
+	const url = `https://raw.githubusercontent.com/${templateConfig.user}/${templateConfig.repository}/${templateConfig.ref}/${sourcePath}`
 	const resp = await fetch(url)
 	if (!resp.ok) {
 		console.error(`Unable to load ${sourcePath}`)

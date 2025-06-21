@@ -4,11 +4,11 @@ import { createSpinner } from 'nanospinner'
 import tiged from 'tiged'
 import { convertFilename } from './convertString.js'
 import { copyFileFromRepo } from './copyFileFromRepo.js'
-import { templateConig } from './templateConig.js'
+import { templateConfig } from './templateConfig.js'
 import type { Settings } from './types.js'
 import { walkAndRename } from './walkAndRename.js'
 
-const getRepoContentUrl = `https://api.github.com/repos/${templateConig.user}/${templateConig.repository}/git/trees/${templateConig.ref}?recursive=true`
+const getRepoContentUrl = `https://api.github.com/repos/${templateConfig.user}/${templateConfig.repository}/git/trees/${templateConfig.ref}?recursive=true`
 
 export const createDaprBridge = async (targetDirectoryPath: string, settings: Settings) => {
 	const templateName = 'dapr'
@@ -16,7 +16,7 @@ export const createDaprBridge = async (targetDirectoryPath: string, settings: Se
 
 	await new Promise((resolve, reject) => {
 		const emitter = tiged(
-			`${templateConig.user}/${templateConig.repository}/${templateConig.directory}/${templateName}#${templateConig.ref}`,
+			`${templateConfig.user}/${templateConfig.repository}/${templateConfig.directory}/${templateName}#${templateConfig.ref}`,
 			{
 				cache: false,
 				force: true,
@@ -45,12 +45,12 @@ export const createDaprBridge = async (targetDirectoryPath: string, settings: Se
 
 	const getFilesFromRepo = async (subPath: string) => {
 		const eventBridgeFiles = fileListAll.tree
-			.filter(entry => entry.path.startsWith(`${templateConig.directory}/${subPath}`) && entry.type === 'blob')
+			.filter(entry => entry.path.startsWith(`${templateConfig.directory}/${subPath}`) && entry.type === 'blob')
 			.map(e => {
 				const p = e.path
 					.split('/') // split the path
 					.slice(subPath.split('/').length + 1) // remove prefix-folders
-					.map(n => convertFilename(settings, n)) // convert to prefered casing
+                                       .map(n => convertFilename(settings, n)) // convert to preferred casing
 				return copyFileFromRepo(settings, targetDirectoryPath, e.path, join(...p))
 			})
 

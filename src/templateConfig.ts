@@ -1,4 +1,4 @@
-export const templateConig = {
+export const templateConfig = {
 	directory: 'templates',
 	repository: 'starter',
 	user: 'puristajs',
