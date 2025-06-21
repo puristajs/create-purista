@@ -31,7 +31,7 @@
 	"scripts": {
 		"bin": "./bin",
 		"build": "tsc --noEmit && bun run lint && bun ./build.ts && chmod +x ./bin.js ",
-		"prepublish": "bun run lint && bun run test",
+		"prepublish": "bun run lint && bun run test && bun run build",
 		"release": "bun run build && np",
 		"lint": "bunx @biomejs/biome check",
 		"lint:fix": "bunx @biomejs/biome check --write",

@@ -18,7 +18,7 @@ describe('convertString utilities', () => {
 	}
 
 	it('converts string based on file convention', () => {
-		const s = { ...baseSettings }
+		const s: Settings = { ...baseSettings }
 		s.fileConvention = 'snake'
 		expect(convertString(s, 'myFile')).toBe('my_file')
 		s.fileConvention = 'kebab'
@@ -30,12 +30,12 @@ describe('convertString utilities', () => {
 	})
 
 	it('converts filename with dots', () => {
-		const s = { ...baseSettings, fileConvention: 'kebab' }
+		const s: Settings = { ...baseSettings, fileConvention: 'kebab' }
 		expect(convertFilename(s, 'MyFile.ts')).toBe('my-file.ts')
 	})
 
 	it('rewrites local import paths', () => {
-		const s = { ...baseSettings, fileConvention: 'snake' }
+		const s: Settings = { ...baseSettings, fileConvention: 'snake' }
 		const code = "import foo from './MyFile'"
 		const result = rewriteLocalImportPaths(s, code)
 		expect(result).toContain("import foo from './my_file'")
