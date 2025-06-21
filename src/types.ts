@@ -13,7 +13,7 @@ export type Settings = {
 	useWebserver: boolean
 	/** Format convention for files (camel case, snake case...) */
 	fileConvention: 'camel' | 'snake' | 'kebab' | 'pascal' | 'pascalSnake'
-       /** Format convention to use for events (snake case, camel case...) */
+	/** Format convention to use for events (snake case, camel case...) */
 	eventConvention:
 		| 'camel'
 		| 'snake'

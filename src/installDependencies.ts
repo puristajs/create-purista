@@ -1,7 +1,6 @@
-import chalk from 'chalk'
-
 import { exec } from 'node:child_process'
 import { chdir, exit } from 'node:process'
+import chalk from 'chalk'
 import { createSpinner } from 'nanospinner'
 import type { PackageManager, Settings } from './types.js'
 

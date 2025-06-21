@@ -23,7 +23,7 @@ export const updateTSConfigJson = async (targetDirectoryPath: string, settings: 
 			...tsConfig,
 			compilerOptions: {
 				...tsConfig.compilerOptions,
-				types: ['vitest/globals', 'node'],
+				types: ['node'],
 			},
 		}
 	}

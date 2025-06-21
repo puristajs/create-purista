@@ -92,11 +92,11 @@ const eventConventions = [
 		name: 'constant case',
 		description: 'MY_EVENT',
 	},
-       {
-               value: 'dotCase',
-               name: 'dot case',
-               description: 'my.event',
-       },
+	{
+		value: 'dotCase',
+		name: 'dot case',
+		description: 'my.event',
+	},
 	{
 		value: 'pathCase',
 		name: 'path case',
@@ -122,7 +122,7 @@ const linters = [
 	},
 	{
 		value: 'none',
-               name: 'Do not install a linter',
+		name: 'Do not install a linter',
 		description: 'https://eslint.org/',
 	},
 ]
