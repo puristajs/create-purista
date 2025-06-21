@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import fs from 'node:fs'
-import { mkdtempSync } from 'node:fs'
+import fs, { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { getPackageJson } from '../../src/getPackageJson.js'

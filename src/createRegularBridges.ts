@@ -51,7 +51,7 @@ export const createRegularBridges = async (targetDirectoryPath: string, settings
 				const p = e.path
 					.split('/') // split the path
 					.slice(subPath.split('/').length + 1) // remove prefix-folders
-                                       .map(n => convertFilename(settings, n)) // convert to preferred casing
+					.map(n => convertFilename(settings, n)) // convert to preferred casing
 				return copyFileFromRepo(settings, targetDirectoryPath, e.path, join(...p))
 			})
 
