@@ -18,7 +18,6 @@ describe('runtime setup', () => {
 		formatter: 'none',
 		type: 'module',
 		packageManager: 'npm',
-		runtime: 'node',
 	}
 
 	it('creates tsconfig for node runtime', async () => {
@@ -42,7 +41,7 @@ describe('runtime setup', () => {
 	it('generates runtime specific package.json', () => {
 		const bun = getPackageJson({ ...base, runtime: 'bun' } as Settings)
 		const node = getPackageJson({ ...base, runtime: 'node' } as Settings)
-		expect(bun.scripts.start).toContain('bun')
-		expect(node.scripts.start).toContain('tsx')
+		expect(bun.scripts?.start).toContain('bun')
+		expect(node.scripts?.start).toContain('tsx')
 	})
 })
