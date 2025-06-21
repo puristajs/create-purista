@@ -33,7 +33,7 @@ const bridges = [
 	{ value: 'dapr', name: 'Dapr', description: 'Dapr Runtime' },
 ]
 
-const fileConvetions = [
+const fileConventions = [
 	{
 		value: 'camel',
 		name: 'camel case',
@@ -61,7 +61,7 @@ const fileConvetions = [
 	},
 ]
 
-const eventConvetions = [
+const eventConventions = [
 	{
 		value: 'camel',
 		name: 'camel case',
@@ -92,11 +92,11 @@ const eventConvetions = [
 		name: 'constant case',
 		description: 'MY_EVENT',
 	},
-	{
-		value: 'constantCase',
-		name: 'dot case',
-		description: 'my.event',
-	},
+       {
+               value: 'dotCase',
+               name: 'dot case',
+               description: 'my.event',
+       },
 	{
 		value: 'pathCase',
 		name: 'path case',
@@ -122,7 +122,7 @@ const linters = [
 	},
 	{
 		value: 'none',
-		name: 'DO not install a linter',
+               name: 'Do not install a linter',
 		description: 'https://eslint.org/',
 	},
 ]
@@ -231,7 +231,7 @@ export const getSettings = async (args: Arguments) => {
 		(await select({
 			loop: true,
 			message: 'Which file naming convention do you prefer?',
-			choices: fileConvetions,
+			choices: fileConventions,
 			default: 0,
 		}))
 
@@ -240,7 +240,7 @@ export const getSettings = async (args: Arguments) => {
 		(await select({
 			loop: true,
 			message: 'Which naming convention should be used for events?',
-			choices: eventConvetions,
+			choices: eventConventions,
 			default: 0,
 		}))
 
