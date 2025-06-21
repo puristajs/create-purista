@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'bun:test'
 import { convertFilename, convertString, rewriteLocalImportPaths } from '../../src/convertString.js'
 import type { Settings } from '../../src/types.js'
 

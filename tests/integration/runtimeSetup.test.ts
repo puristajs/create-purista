@@ -1,8 +1,8 @@
+import { describe, expect, it } from 'bun:test'
 import fs from 'node:fs'
 import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { describe, expect, it } from 'vitest'
 import { getPackageJson } from '../../src/getPackageJson.js'
 import type { Settings } from '../../src/types.js'
 import { updateTSConfigJson } from '../../src/updateTSConfigJson.js'
@@ -28,7 +28,7 @@ describe('runtime setup', () => {
 		await updateTSConfigJson(dir, { ...base, runtime: 'node' } as Settings)
 		const content = fs.readFileSync(path.join(dir, 'tsconfig.json'), 'utf-8')
 		const cfg = JSON.parse(content)
-		expect(cfg.compilerOptions.types).toContain('vitest/globals')
+		expect(cfg.compilerOptions.types).toContain('node')
 	})
 
 	it('creates tsconfig for bun runtime', async () => {
