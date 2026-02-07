@@ -3,25 +3,25 @@
 This repository contains the installer for a new PURISTA based application.
 
 ```sh
-npm create purista
+npm create purista@latest
 ```
 
 **OR with Bun**
 
 ```sh
-bun create purista
+bun create purista@latest
 ```
 
 **OR with Yarn**
 
 ```sh
-yarn create purista
+yarn create purista@latest
 ```
 
 **OR with pnpm**
 
 ```sh
-pnpm create purista
+pnpm create purista@latest
 ```
 
 ---
