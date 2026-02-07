@@ -7,7 +7,6 @@ import { installDependencies } from './installDependencies.js'
 
 async function main() {
 	const args = yargsParser(process.argv.slice(2))
-	const { pm } = args
 
 	const settings = await getSettings(args)
 

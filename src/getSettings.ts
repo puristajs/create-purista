@@ -7,17 +7,24 @@ import type { Arguments } from 'yargs-parser'
 import { version } from '../package.json'
 import type { PackageManager, Settings } from './types.js'
 
-const runtimes = [
+type Runtime = Settings['runtime']
+type ModuleType = Settings['type']
+type FileConvention = Settings['fileConvention']
+type EventConvention = Settings['eventConvention']
+type Linter = Settings['linter']
+type EventBridge = Settings['eventBridge']
+
+const runtimes: { value: Runtime; name: string }[] = [
 	{ value: 'node', name: 'Node.js' },
 	{ value: 'bun', name: 'Bun' },
 ]
 
-const moduleTypes = [
+const moduleTypes: { value: ModuleType; name: string }[] = [
 	{ value: 'module', name: 'ESM' },
 	{ value: 'commonjs', name: 'CommonJS' },
 ]
 
-const bridges = [
+const bridges: { value: EventBridge; name: string; description: string }[] = [
 	{
 		value: 'default',
 		name: 'Default',
@@ -33,7 +40,7 @@ const bridges = [
 	{ value: 'dapr', name: 'Dapr', description: 'Dapr Runtime' },
 ]
 
-const fileConventions = [
+const fileConventions: { value: FileConvention; name: string; description: string }[] = [
 	{
 		value: 'camel',
 		name: 'camel case',
@@ -61,7 +68,7 @@ const fileConventions = [
 	},
 ]
 
-const eventConventions = [
+const eventConventions: { value: EventConvention; name: string; description: string }[] = [
 	{
 		value: 'camel',
 		name: 'camel case',
@@ -109,7 +116,7 @@ const eventConventions = [
 	},
 ]
 
-const linters = [
+const linters: { value: Linter; name: string; description: string }[] = [
 	{
 		value: 'biome',
 		name: 'Biome',
@@ -139,7 +146,39 @@ function getCurrentPackageManager(): PackageManager {
 
 const currentPackageManager = getCurrentPackageManager()
 
-const knownPackageManagerNames = ['bun', 'npm', 'pnpm', 'yarn']
+const knownPackageManagerNames: PackageManager[] = ['bun', 'npm', 'pnpm', 'yarn']
+const knownRuntimes: Runtime[] = ['node', 'bun']
+const knownModuleTypes: ModuleType[] = ['module', 'commonjs']
+const knownFileConventions: FileConvention[] = ['camel', 'snake', 'kebab', 'pascal', 'pascalSnake']
+const knownEventConventions = [
+	'camel',
+	'snake',
+	'kebab',
+	'pascal',
+	'pascalSnake',
+	'constantCase',
+	'dotCase',
+	'pathCase',
+	'trainCase',
+] as EventConvention[]
+const knownLinters: Linter[] = ['biome', 'eslint', 'none']
+const knownBridges: EventBridge[] = ['default', 'mqtt', 'amqp', 'nats', 'dapr']
+
+export const getStringArgument = (value: unknown): string | undefined => {
+	return typeof value === 'string' && value.length > 0 ? value : undefined
+}
+
+export const getBooleanArgument = (value: unknown): boolean | undefined => {
+	return typeof value === 'boolean' ? value : undefined
+}
+
+export const getOneOfArgument = <T extends string>(value: unknown, allowed: readonly T[]): T | undefined => {
+	const arg = getStringArgument(value)
+	if (!arg) {
+		return undefined
+	}
+	return allowed.includes(arg as T) ? (arg as T) : undefined
+}
 
 function checkPackageManagerInstalled(packageManager: string) {
 	return new Promise<boolean>(resolve => {
@@ -166,7 +205,15 @@ export const getSettings = async (args: Arguments) => {
 
 	console.log(chalk.gray(`create-purista version ${version}`))
 
-	const { install, pm, template: templateArg } = args
+	const packageManagerArg = getOneOfArgument(args.pm, knownPackageManagerNames)
+	// Keep backwards compatibility for `--template <runtime>` while preferring dedicated `--runtime`.
+	const runtimeArg = getOneOfArgument(args.runtime, knownRuntimes) ?? getOneOfArgument(args.template, knownRuntimes)
+	const moduleTypeArg = getOneOfArgument(args.type, knownModuleTypes)
+	const fileConventionArg = getOneOfArgument(args.fileConvention, knownFileConventions)
+	const eventConventionArg = getOneOfArgument(args.eventConvention, knownEventConventions)
+	const linterArg = getOneOfArgument(args.linter, knownLinters)
+	const eventBridgeArg = getOneOfArgument(args.eventBridge, knownBridges)
+	const useWebserverArg = getBooleanArgument(args.useWebserver)
 
 	if (args._[0]) {
 		config.target = args._[0].toString()
@@ -186,8 +233,8 @@ export const getSettings = async (args: Arguments) => {
 	}
 
 	config.runtime =
-		templateArg ||
-		(await select({
+		runtimeArg ??
+		(await select<Runtime>({
 			loop: true,
 			message: 'Which runtime do you use?',
 			choices: runtimes,
@@ -202,24 +249,24 @@ export const getSettings = async (args: Arguments) => {
 		console.error('Looks like no package manager is installed')
 	}
 
-	if (pm && installedPackageManagerNames.includes(pm)) {
-		config.packageManager = pm
+	if (packageManagerArg && installedPackageManagerNames.includes(packageManagerArg)) {
+		config.packageManager = packageManagerArg
 	} else if (config.runtime === 'bun' && installedPackageManagerNames.includes('bun')) {
 		config.packageManager = 'bun'
 	} else {
-		config.packageManager = await select({
+		config.packageManager = await select<PackageManager>({
 			message: 'Which package manager do you want to use?',
-			choices: installedPackageManagerNames.map((template: string) => ({
-				title: template,
-				value: template as PackageManager,
+			choices: installedPackageManagerNames.map((packageManager: PackageManager) => ({
+				name: packageManager,
+				value: packageManager,
 			})),
 			default: currentPackageManager,
 		})
 	}
 
 	config.type =
-		templateArg ||
-		(await select({
+		moduleTypeArg ||
+		(await select<ModuleType>({
 			loop: true,
 			message: 'Do you want to create an ESM or CommonJS?',
 			choices: moduleTypes,
@@ -227,8 +274,8 @@ export const getSettings = async (args: Arguments) => {
 		}))
 
 	config.fileConvention =
-		templateArg ||
-		(await select({
+		fileConventionArg ||
+		(await select<FileConvention>({
 			loop: true,
 			message: 'Which file naming convention do you prefer?',
 			choices: fileConventions,
@@ -236,8 +283,8 @@ export const getSettings = async (args: Arguments) => {
 		}))
 
 	config.eventConvention =
-		templateArg ||
-		(await select({
+		eventConventionArg ||
+		(await select<EventConvention>({
 			loop: true,
 			message: 'Which naming convention should be used for events?',
 			choices: eventConventions,
@@ -245,8 +292,8 @@ export const getSettings = async (args: Arguments) => {
 		}))
 
 	config.linter =
-		templateArg ||
-		(await select({
+		linterArg ||
+		(await select<Linter>({
 			loop: true,
 			message: 'Which linter and code prettifier do you prefer?',
 			choices: linters,
@@ -254,8 +301,8 @@ export const getSettings = async (args: Arguments) => {
 		}))
 
 	config.eventBridge =
-		templateArg ||
-		(await select({
+		eventBridgeArg ||
+		(await select<EventBridge>({
 			loop: true,
 			message: 'Choose the Event Bridge',
 			choices: bridges,
@@ -264,8 +311,8 @@ export const getSettings = async (args: Arguments) => {
 
 	if (config.eventBridge !== 'dapr') {
 		config.useWebserver =
-			templateArg ||
-			(await select({
+			useWebserverArg ??
+			(await select<boolean>({
 				loop: true,
 				message: 'Install Webservice',
 				choices: [
