@@ -166,7 +166,7 @@ export const getSettings = async (args: Arguments) => {
 
 	console.log(chalk.gray(`create-purista version ${version}`))
 
-	const { install, pm, template: templateArg } = args
+	const { pm, template: templateArg } = args
 
 	if (args._[0]) {
 		config.target = args._[0].toString()
