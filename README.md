@@ -1,6 +1,11 @@
 # PURISTA Create CLI
 
-This repository contains the installer for a new PURISTA based application.
+This repository contains the standalone project-creation wrapper for PURISTA.
+The wrapper now delegates to the shared modular engine in `@purista/cli`, so
+interactive and non-interactive creation follow the same command contract as the
+main `purista init` command. Project generation itself now happens through the
+shared local blueprint engine in `@purista/cli`; this wrapper no longer clones
+templates or owns separate scaffold logic.
 
 ```sh
 npm create purista@latest
@@ -22,6 +27,12 @@ yarn create purista@latest
 
 ```sh
 pnpm create purista@latest
+```
+
+You can also use non-interactive flags directly through the wrapper, for example:
+
+```sh
+npm create purista@latest my-app -- --defaults --non-interactive
 ```
 
 ---
