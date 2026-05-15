@@ -35,6 +35,16 @@ You can also use non-interactive flags directly through the wrapper, for example
 npm create purista@latest my-app -- --defaults --non-interactive
 ```
 
+Generated projects include scripts for provider-neutral exports:
+
+```sh
+npm run export:asyncapi
+npm run export:schedules
+npm run export:runtime
+```
+
+Those exports describe service events, schedules, and selected runtime bridge capabilities without requiring PURISTA to own your scheduler, broker, database, or workflow engine.
+
 ---
 
 - Official Website: **[purista.dev](https://purista.dev)**
