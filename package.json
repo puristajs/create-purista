@@ -1,6 +1,6 @@
 {
 	"name": "create-purista",
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"description": "Init a PURISTA project",
 	"author": "Sebastian Wessel",
 	"keywords": [
@@ -31,7 +31,7 @@
 	"scripts": {
 		"bin": "./bin",
 		"build": "tsc --noEmit && bun run lint && bun ./build.ts && chmod +x ./bin.js ",
-		"release": "bun run build && np",
+		"release": "bun run build && npm publish",
 		"lint": "bunx @biomejs/biome check",
 		"lint:fix": "bunx @biomejs/biome check --write",
 		"test": "bun test"
@@ -41,7 +41,6 @@
 		"@types/bun": "^1.3.14",
 		"@types/node": "^25.8.0",
 		"esbuild": "^0.28.0",
-		"np": "^11.2.1",
 		"typescript": "^6.0.3"
 	},
 	"license": "MIT",
