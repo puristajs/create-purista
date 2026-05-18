@@ -40,10 +40,13 @@ Generated projects include scripts for provider-neutral exports:
 ```sh
 npm run export:asyncapi
 npm run export:schedules
+npm run export:kubernetes-cronjobs
 npm run export:runtime
 ```
 
 Those exports describe service events, schedules, and selected runtime bridge capabilities without requiring PURISTA to own your scheduler, broker, database, or workflow engine.
+The Kubernetes CronJob export is manifest generation only: Kubernetes owns the clock, and the generated trigger calls a PURISTA application boundary for an event, queue, or short command target.
+Generated projects require `--trigger-image` plus `--trigger-url` or `--trigger-command` when running the Kubernetes export script.
 
 ---
 
