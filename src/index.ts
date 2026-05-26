@@ -10,6 +10,15 @@ import { parseArgs } from './parseArgs.js'
 
 const stringArg = <T extends string>(value: unknown) => (typeof value === 'string' ? (value as T) : undefined)
 
+function renderSkillRecommendation() {
+	console.log('\nRecommended for AI-assisted development:')
+	console.log('  npx skills add puristajs/purista --skill purista')
+	console.log(
+		'This installs the PURISTA AI skill so coding assistants understand services, builders, command contracts, and runtime wiring.',
+	)
+	console.log('Docs: https://purista.dev/handbook/install-ai-skill/')
+}
+
 async function main() {
 	const args = parseArgs(process.argv.slice(2))
 	const mode = getCommandMode({
@@ -65,6 +74,7 @@ async function main() {
 		const result = await initProjectCommand.execute(resolution.resolvedInput, context)
 
 		output.renderResult(result)
+		renderSkillRecommendation()
 	} catch (error) {
 		output.renderError(error)
 		process.exit(error instanceof PuristaCliError ? error.exitCode : 1)
