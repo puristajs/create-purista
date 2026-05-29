@@ -2,6 +2,7 @@
 	"name": "create-purista",
 	"version": "2.2.0",
 	"description": "Init a PURISTA project",
+	"type": "module",
 	"author": "Sebastian Wessel",
 	"keywords": [
 		"purista",
@@ -29,7 +30,7 @@
 		"url": "https://github.com/puristajs/create-purista.git"
 	},
 	"scripts": {
-		"bin": "./bin",
+		"bin": "node ./bin.js",
 		"build": "tsc --noEmit && bun run lint && bun ./build.ts && chmod +x ./bin.js ",
 		"release": "bun run build && npm publish",
 		"lint": "bunx @biomejs/biome check",
