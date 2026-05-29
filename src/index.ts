@@ -41,7 +41,6 @@ async function main() {
 			target: args._[0],
 			runtime: stringArg<NonNullable<InitProjectInput['runtime']>>(args.runtime),
 			packageManager: stringArg<NonNullable<InitProjectInput['packageManager']>>(args['package-manager']),
-			type: stringArg<NonNullable<InitProjectInput['type']>>(args.type),
 			eventBridge: stringArg<NonNullable<InitProjectInput['eventBridge']>>(args['event-bridge']),
 			fileConvention: stringArg<NonNullable<InitProjectInput['fileConvention']>>(args['file-convention']),
 			eventConvention: stringArg<NonNullable<InitProjectInput['eventConvention']>>(args['event-convention']),
