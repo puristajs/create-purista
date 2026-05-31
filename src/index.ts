@@ -11,12 +11,9 @@ import { parseArgs } from './parseArgs.js'
 const stringArg = <T extends string>(value: unknown) => (typeof value === 'string' ? (value as T) : undefined)
 
 function renderSkillRecommendation() {
-	console.log('\nRecommended for AI-assisted development:')
-	console.log('  npx skills add puristajs/purista --skill purista')
-	console.log(
-		'This installs the PURISTA AI skill so coding assistants understand services, builders, command contracts, and runtime wiring.',
-	)
-	console.log('Docs: https://purista.dev/handbook/install-ai-skill/')
+	console.log('\nAI-assisted development:')
+	console.log('  This project includes AGENTS.md, CLAUDE.md, .agents/IMPLEMENTATION.md, and local PURISTA skill links.')
+	console.log('  The skill links target node_modules/@purista/core/skills/purista and update with @purista/core.')
 }
 
 async function main() {
