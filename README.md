@@ -48,7 +48,7 @@ Those exports describe service events, schedules, and selected runtime bridge ca
 The Kubernetes CronJob export is manifest generation only: Kubernetes owns the clock, and the generated trigger calls a PURISTA application boundary for an event, queue, or short command target.
 Generated projects require `--trigger-image` plus `--trigger-url` or `--trigger-command` when running the Kubernetes export script.
 
-Generated agent guidance keeps AI runtime wiring in application bootstrap/config. Attached agents bind `ai.models` and, when needed, `ai.sandbox`, `ai.runtime`, and `ai.workspace`; durable replay is declared in code with `setWorkspacePolicy({ mode: 'durable', required: true })`.
+Generated agent guidance keeps AI runtime wiring in application bootstrap/config. Attached agents bind `ai.models` and, when needed, `ai.sandbox`, `ai.runtime`, and `ai.workspaceStore`; durable replay is declared in code with `setWorkspacePolicy({ mode: 'durable', required: true })`.
 
 ---
 
