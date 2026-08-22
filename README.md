@@ -101,6 +101,12 @@ Generated projects require `--trigger-image` plus `--trigger-url` or `--trigger-
 
 Generated agent guidance keeps AI runtime wiring in application bootstrap/config. Attached agents bind `ai.models` and, when needed, `ai.skills`, `ai.sandbox`, `ai.runtime`, and `ai.workspaceStore`; skill-backed agents declare `.useSkills(...)` in code and bind directories through runtime `ai.skills` options. Agents are ephemeral by default. A generated project can opt into a resumable workflow with `npm run add:agent -- <name> --service <service> --service-version 1 --durable-workspace`; that template declares `setHarnessWorkflow(...)` and `setWorkspacePolicy({ mode: 'durable', required: true, cleanup: 'on_terminal' })`. Direct harness agents and custom run functions cannot use durable workspace replay.
 
+Generated applications link both the normal `purista` skill and the focused
+`purista-migration` skill from `@purista/core`. Use the migration skill only
+for an existing-project upgrade: it records the package and lockfile baseline,
+definitions, checks, rollout order, and rollback trigger rather than treating a
+release migration as ordinary feature work.
+
 ---
 
 - Official Website: **[purista.dev](https://purista.dev)**
