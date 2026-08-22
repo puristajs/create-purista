@@ -43,6 +43,7 @@ async function main() {
 			eventConvention: stringArg<NonNullable<InitProjectInput['eventConvention']>>(args['event-convention']),
 			linter: stringArg<NonNullable<InitProjectInput['linter']>>(args.linter),
 			formatter: stringArg<NonNullable<InitProjectInput['formatter']>>(args.formatter),
+			telemetry: stringArg<NonNullable<InitProjectInput['telemetry']>>(args.telemetry),
 			useWebserver: typeof args.webserver === 'boolean' ? args.webserver : undefined,
 			installDependencies: typeof args.install === 'boolean' ? args.install : undefined,
 		}
