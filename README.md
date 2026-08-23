@@ -37,21 +37,13 @@ npm create purista@latest my-app -- --defaults --non-interactive
 
 Metrics are opt-in. The default `--telemetry none` keeps the project free of
 OpenTelemetry SDK dependencies. Use `--telemetry otel` to generate an
-application-owned MeterProvider with a console reader and a declared custom
-service metric. Replace that reader with your OTLP/collector setup in the
-application; PURISTA never creates an exporter or `/metrics` endpoint itself.
+application-owned MeterProvider with a console reader. It does not declare
+application metrics: add those only when the domain and operations team need
+them. Replace that reader with your OTLP/collector setup in the application;
+PURISTA never creates an exporter or `/metrics` endpoint itself.
 
 ```sh
 npm create purista@latest my-app -- --defaults --non-interactive --telemetry otel
-```
-
-Generated projects include scripts for provider-neutral exports:
-
-```sh
-npm run export:asyncapi
-npm run export:schedules
-npm run export:kubernetes-cronjobs
-npm run export:runtime
 ```
 
 Before changing an existing generated application, export its definitions and
@@ -77,23 +69,6 @@ purista compose --composition deployment.architecture.json \
   --strict --format json
 ```
 
-Those exports describe service events, schedules, and selected runtime bridge capabilities. PURISTA Core also provides a trigger-only Scheduler Runtime that runs as a separate host. For local development only, generated projects expose:
-
-```sh
-npm run export:schedules
-npm run start:scheduler
-```
-
-`start:scheduler` uses the process-local `DefaultSchedulerProvider`. Do not
-run it in every business-service replica. A replicated production scheduler
-host requires a shared EventBridge, a provider with durable distributed claims,
-strict scheduler startup, and downstream idempotency based on
-`message.schedule.occurrenceId`.
-
-It also does not make two `DefaultEventBridge` processes communicate. For a
-separately started local scheduler and application, choose one shared transport
-before running `start:scheduler`.
-
 Create an event-only schedule declaration in a generated project with:
 
 ```sh
@@ -107,9 +82,16 @@ The generated declaration has no business handler. A regular subscription,
 queue worker, or agent consumes the emitted event; the scheduler host only owns
 the clock and event publication.
 
-Durable claims and provider-specific delivery remain explicit provider integrations.
-The Kubernetes CronJob export is manifest generation only: Kubernetes owns the clock, and the generated trigger calls a PURISTA application boundary for an event, queue, or short command target.
-Generated projects require `--trigger-image` plus `--trigger-url` or `--trigger-command` when running the Kubernetes export script.
+Schedules are not part of the generated application baseline. Export the
+definition manifest during build, then deploy a separate Scheduler Runtime with
+an application-selected provider and shared EventBridge. Durable claims,
+provider-specific delivery, and downstream idempotency with
+`message.schedule.occurrenceId` remain explicit application decisions.
+
+The Kubernetes CronJob export is manifest generation only: Kubernetes owns the
+clock, and the generated trigger calls a PURISTA application boundary for an
+event, queue, or short command target. It requires `--trigger-image` plus
+exactly one of `--trigger-url` or `--trigger-command`.
 
 Generated agent guidance keeps AI runtime wiring in application bootstrap/config. Attached agents bind `ai.models` and, when needed, `ai.skills`, `ai.sandbox`, `ai.runtime`, and `ai.workspaceStore`; skill-backed agents declare `.useSkills(...)` in code and bind directories through runtime `ai.skills` options. Agents are ephemeral by default. A generated project can opt into a resumable workflow with `npm run add:agent -- <name> --service <service> --service-version 1 --durable-workspace`; that template declares `setHarnessWorkflow(...)` and `setWorkspacePolicy({ mode: 'durable', required: true, cleanup: 'on_terminal' })`. Direct harness agents and custom run functions cannot use durable workspace replay.
 
