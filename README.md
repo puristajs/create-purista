@@ -61,8 +61,20 @@ load business handlers:
 ```sh
 npm run export:definitions
 purista inspect --definitions purista.definitions.json --format json
+purista inspect --definitions purista.definitions.json --view agent --scope service:billing/1 --depth 1 --schemas referenced --format json
 purista validate --definitions purista.definitions.json --strict --format json
 purista doctor --definitions purista.definitions.json --format json
+purista diff --base approved.architecture.json --definitions purista.definitions.json --strict --format json
+```
+
+For a system deployed from multiple repositories, a deployment repository pins
+each local architecture artifact by digest and validates explicit unresolved
+edge bindings without fetching repositories or contacting infrastructure:
+
+```sh
+purista compose --composition deployment.architecture.json \
+  --artifact billing.architecture.json --artifact catalog.architecture.json \
+  --strict --format json
 ```
 
 Those exports describe service events, schedules, and selected runtime bridge capabilities. PURISTA Core also provides a trigger-only Scheduler Runtime that runs as a separate host. For local development only, generated projects expose:
