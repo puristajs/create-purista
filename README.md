@@ -35,16 +35,9 @@ You can also use non-interactive flags directly through the wrapper, for example
 npm create purista@latest my-app -- --defaults --non-interactive
 ```
 
-Metrics are opt-in. The default `--telemetry none` keeps the project free of
-OpenTelemetry SDK dependencies. Use `--telemetry otel` to generate an
-application-owned MeterProvider with a console reader. It does not declare
-application metrics: add those only when the domain and operations team need
-them. Replace that reader with your OTLP/collector setup in the application;
-PURISTA never creates an exporter or `/metrics` endpoint itself.
-
-```sh
-npm create purista@latest my-app -- --defaults --non-interactive --telemetry otel
-```
+The wrapper uses the shared PURISTA CLI project generator. It does not accept
+a telemetry blueprint option. Configure application-owned metrics providers
+and exporters explicitly after creating the project.
 
 Before changing an existing generated application, export its definitions and
 use the static architecture commands. They do not contact infrastructure or

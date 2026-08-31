@@ -11,8 +11,8 @@ describe('parseArgs', () => {
 			'--no-webserver',
 			'--linter',
 			'biome',
-			'--telemetry',
-			'otel',
+			'--formatter',
+			'biome',
 		])
 
 		expect(parsed._).toEqual(['./my-app'])
@@ -20,6 +20,6 @@ describe('parseArgs', () => {
 		expect(parsed.install).toBe(true)
 		expect(parsed.webserver).toBe(false)
 		expect(parsed.linter).toBe('biome')
-		expect(parsed.telemetry).toBe('otel')
+		expect(parsed.formatter).toBe('biome')
 	})
 })
