@@ -86,7 +86,12 @@ clock, and the generated trigger calls a PURISTA application boundary for an
 event, queue, or short command target. It requires `--trigger-image` plus
 exactly one of `--trigger-url` or `--trigger-command`.
 
-Generated agent guidance keeps AI runtime wiring in application bootstrap/config. Attached agents bind `ai.models` and, when needed, `ai.skills`, `ai.sandbox`, `ai.runtime`, and `ai.workspaceStore`; skill-backed agents declare `.useSkills(...)` in code and bind directories through runtime `ai.skills` options. Agents are ephemeral by default. A generated project can opt into a resumable workflow with `npm run add:agent -- <name> --service <service> --service-version 1 --durable-workspace`; that template declares `setHarnessWorkflow(...)` and `setWorkspacePolicy({ mode: 'durable', required: true, cleanup: 'on_terminal' })`. Direct harness agents and custom run functions cannot use durable workspace replay.
+The generated `add:agent` command creates a native, provider-neutral
+`@purista/harness` definition under `src/harness`, a standalone fake-model test,
+and a small `ServiceBuilder.mountHarness(...)` publication policy. Model
+providers, Skills, storage, sandbox, admission, queues, and artifact stores stay
+in application bootstrap configuration. The generator does not add credentials,
+HTTP exposure, tools, Skills, or infrastructure authority implicitly.
 
 Generated applications link both the normal `purista` skill and the focused
 `purista-migration` skill from `@purista/core`. Use the migration skill only
