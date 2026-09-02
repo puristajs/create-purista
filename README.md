@@ -86,11 +86,11 @@ clock, and the generated trigger calls a PURISTA application boundary for an
 event, queue, or short command target. It requires `--trigger-image` plus
 exactly one of `--trigger-url` or `--trigger-command`.
 
-The first generated `add:agent` command creates a native, provider-neutral
-`@purista/harness` module under `src/harness/<service>`, the service's composed
-Harness definition, a standalone fake-model test, and one
-`ServiceBuilder.mountHarness(...)` publication policy. Later agents extend the
-same definition and policy. Model
+The first generated `add:agent` or `add:workflow` command creates a native,
+provider-neutral `@purista/harness` module under `src/harness/<service>`, the
+service's composed Harness definition, a standalone test, and one
+`ServiceBuilder.mountHarness(...)` publication policy. Later agents and
+workflows extend the same definition and policy. Model
 providers, Skills, storage, sandbox, admission, queues, and artifact stores stay
 in application bootstrap configuration. The generator does not add credentials,
 HTTP exposure, tools, Skills, or infrastructure authority implicitly.
