@@ -1,6 +1,6 @@
 {
 	"name": "create-purista",
-	"version": "2.2.0",
+	"version": "3.0.0",
 	"description": "Init a PURISTA project",
 	"type": "module",
 	"author": "Sebastian Wessel",

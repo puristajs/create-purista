@@ -8,31 +8,31 @@ shared local blueprint engine in `@purista/cli`; this wrapper no longer clones
 templates or owns separate scaffold logic.
 
 ```sh
-npm create purista@latest
+npm create purista@3.0.0
 ```
 
 **OR with Bun**
 
 ```sh
-bun create purista@latest
+bun create purista@3.0.0
 ```
 
 **OR with Yarn**
 
 ```sh
-yarn create purista@latest
+yarn create purista@3.0.0
 ```
 
 **OR with pnpm**
 
 ```sh
-pnpm create purista@latest
+pnpm create purista@3.0.0
 ```
 
 You can also use non-interactive flags directly through the wrapper, for example:
 
 ```sh
-npm create purista@latest my-app -- --defaults --non-interactive
+npm create purista@3.0.0 my-app -- --defaults --non-interactive
 ```
 
 The wrapper uses the shared PURISTA CLI project generator. It does not accept
@@ -87,12 +87,13 @@ event, queue, or short command target. It requires `--trigger-image` plus
 exactly one of `--trigger-url` or `--trigger-command`.
 
 The first generated `add:agent` or `add:workflow` command creates a native,
-provider-neutral `@purista/harness` module under `src/harness/<service>`, the
-service's composed Harness definition, a standalone test, and one
-`ServiceBuilder.mountHarness(...)` publication policy. Later agents and
-workflows extend the same definition and policy. Model
-providers, Skills, storage, sandbox, admission, queues, and artifact stores stay
-in application bootstrap configuration. The generator does not add credentials,
+provider-neutral `@purista/harness` module under
+`src/service/<service>/v<version>/harness/{agent,workflow,tool,skill,mcp}`,
+the service's composed Harness definition, a standalone test, and one final
+`ServiceBuilder.mountHarness(...)` call. Later agents and workflows extend that
+definition. Bind the primary model as `ai.model` in application startup;
+providers, Skills, storage, sandbox, admission, queues, and artifact stores
+remain application-owned configuration. The generator does not add credentials,
 HTTP exposure, tools, Skills, or infrastructure authority implicitly.
 
 Generated applications link both the normal `purista` skill and the focused
