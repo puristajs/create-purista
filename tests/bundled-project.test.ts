@@ -65,7 +65,7 @@ describe('bundled create-purista artifact', () => {
 			expect(files.some(([path]) => path.endsWith('/src/service/ping/v1/pingV1Service.ts'))).toBe(true)
 			expect(files.some(([path]) => path.includes('/src/harness/'))).toBe(false)
 			expect(generatedText).not.toMatch(/(?:"|')(?:latest|workspace:|file:|link:|copy:)/i)
-			expect(generatedText).not.toMatch(/src\/harness|defineHarnessModule|getAgentQueueBuilder|ai\.models/i)
+			expect(generatedText).not.toMatch(/src\/harness|defineHarnessModule|getAgentQueueBuilder|ai\.model\b/i)
 
 			execFileSync(
 				process.execPath,
@@ -80,6 +80,8 @@ describe('bundled create-purista artifact', () => {
 					'1',
 					'--description',
 					'Assistant',
+					'--model-alias',
+					'assistant',
 					'--defaults',
 					'--non-interactive',
 				],
@@ -104,11 +106,13 @@ describe('bundled create-purista artifact', () => {
 			expect(agentManifest.dependencies['@purista/harness']).toBe('^4.0.0')
 			expect(agentManifest.dependencies['@purista/harness-openai']).toBe('^4.0.0')
 			expect(agentSource).toContain("defineAgent('assistant'")
+			expect(agentSource).toMatch(/model:\s*['"]assistant['"]/)
 			expect(agentTest).toContain('FakeModelProvider')
 			expect(harness).toContain('.addAgent(assistantAgent)')
 			expect(service.match(/\.mountHarness\(/g)).toHaveLength(1)
 			expect(bootstrap).toContain('ai: {')
-			expect(bootstrap).toContain('model: {')
+			expect(bootstrap).toContain('models: {')
+			expect(bootstrap).toContain('assistant: {')
 			expect(bootstrap).toContain('openai({ apiKey: env.OPENAI_API_KEY })')
 			expect(envSchema).toContain('OPENAI_API_KEY: z.string().min(1)')
 			expect(envExample).toBe('OPENAI_API_KEY=\n')
@@ -147,6 +151,7 @@ describe('bundled create-purista artifact', () => {
 		expect(artifact.startsWith('#!/usr/bin/env node')).toBe(true)
 		expect(artifact).not.toContain('../../purista/packages/cli')
 		expect(artifact).toContain('src/service/<service>/v<version>/harness/{agent,workflow,tool,skill,mcp}')
-		expect(artifact).not.toMatch(/src\/harness|defineHarnessModule|getAgentQueueBuilder|ai\.models/i)
+		expect(artifact).not.toMatch(/src\/harness|defineHarnessModule|getAgentQueueBuilder|ai\.model\b/i)
+		expect(artifact).toContain('ai.models')
 	})
 })

@@ -91,10 +91,11 @@ provider-neutral `@purista/harness` module under
 `src/service/<service>/v<version>/harness/{agent,workflow,tool,skill,mcp}`,
 the service's composed Harness definition, a standalone test, and one final
 `ServiceBuilder.mountHarness(...)` call. Later agents and workflows extend that
-definition. Bind the primary model as `ai.model` in application startup;
-providers, Skills, storage, sandbox, admission, queues, and artifact stores
-remain application-owned configuration. The generator does not add credentials,
-HTTP exposure, tools, Skills, or infrastructure authority implicitly.
+definition. Every agent selects an explicit application-chosen model alias;
+bind the exact aliases through `ai.models` in application startup. Providers,
+Skills, storage, sandbox, admission, queues, and artifact stores remain
+application-owned configuration. The generator does not add credentials, HTTP
+exposure, tools, Skills, or infrastructure authority implicitly.
 
 Generated applications link both the normal `purista` skill and the focused
 `purista-migration` skill from `@purista/core`. Use the migration skill only
