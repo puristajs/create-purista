@@ -13,7 +13,10 @@ const stringArg = <T extends string>(value: unknown) => (typeof value === 'strin
 function renderSkillRecommendation() {
 	console.log('\nAI-assisted development:')
 	console.log('  This project includes AGENTS.md, CLAUDE.md, .agents/IMPLEMENTATION.md, and local PURISTA skill links.')
-	console.log('  The skill links target node_modules/@purista/core/skills/purista and update with @purista/core.')
+	console.log('  The links include the PURISTA architecture and migration skills and update with @purista/core.')
+	console.log(
+		'  Agents and workflows belong with their service version under src/service/<service>/v<version>/harness/{agent,workflow,tool,skill,mcp}.',
+	)
 }
 
 async function main() {

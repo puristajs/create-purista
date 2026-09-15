@@ -35,20 +35,83 @@ You can also use non-interactive flags directly through the wrapper, for example
 npm create purista@latest my-app -- --defaults --non-interactive
 ```
 
-Generated projects include scripts for provider-neutral exports:
+The wrapper uses the shared PURISTA CLI project generator. It does not accept
+a telemetry blueprint option. Configure application-owned metrics providers
+and exporters explicitly after creating the project.
+
+Before changing an existing generated application, export its definitions and
+use the static architecture commands. They do not contact infrastructure or
+load business handlers:
 
 ```sh
-npm run export:asyncapi
-npm run export:schedules
-npm run export:kubernetes-cronjobs
-npm run export:runtime
+npm run export:definitions
+purista inspect --definitions purista.definitions.json --format json
+purista inspect --definitions purista.definitions.json --view agent --scope service:billing/1 --depth 1 --schemas referenced --format json
+purista validate --definitions purista.definitions.json --strict --format json
+purista doctor --definitions purista.definitions.json --format json
+purista diff --base approved.architecture.json --definitions purista.definitions.json --strict --format json
 ```
 
-Those exports describe service events, schedules, and selected runtime bridge capabilities without requiring PURISTA to own your scheduler, broker, database, or workflow engine.
-The Kubernetes CronJob export is manifest generation only: Kubernetes owns the clock, and the generated trigger calls a PURISTA application boundary for an event, queue, or short command target.
-Generated projects require `--trigger-image` plus `--trigger-url` or `--trigger-command` when running the Kubernetes export script.
+For a system deployed from multiple repositories, a deployment repository pins
+each local architecture artifact by digest and validates explicit unresolved
+edge bindings without fetching repositories or contacting infrastructure:
 
-Generated agent guidance keeps AI runtime wiring in application bootstrap/config. Attached agents bind `ai.models` and, when needed, `ai.skills`, `ai.sandbox`, `ai.runtime`, and `ai.workspaceStore`; skill-backed agents declare `.useSkills(...)` in code and bind directories through runtime `ai.skills` options, while durable replay is declared in code with `setWorkspacePolicy({ mode: 'durable', required: true })`.
+```sh
+purista compose --composition deployment.architecture.json \
+  --artifact billing.architecture.json --artifact catalog.architecture.json \
+  --strict --format json
+```
+
+Create an event-only schedule declaration in a generated project with:
+
+```sh
+npm run add:schedule -- daily-close \
+  --description "Emit the daily closing trigger" \
+  --service billing --service-version 1 \
+  --event billing.daily_close_due --cron "0 2 * * *"
+```
+
+The generated declaration has no business handler. A regular subscription,
+queue worker, or agent consumes the emitted event; the scheduler host only owns
+the clock and event publication.
+
+Schedules are not part of the generated application baseline. Export the
+definition manifest during build, then deploy a separate Scheduler Runtime with
+an application-selected provider and shared EventBridge. Durable claims,
+provider-specific delivery, and downstream idempotency with
+`message.schedule.occurrenceId` remain explicit application decisions.
+
+The Kubernetes CronJob export is manifest generation only: Kubernetes owns the
+clock, and the generated trigger calls a PURISTA application boundary for an
+event, queue, or short command target. It requires `--trigger-image` plus
+exactly one of `--trigger-url` or `--trigger-command`.
+
+The first generated `add:agent` or `add:workflow` command creates a native,
+provider-neutral `@purista/harness` module under
+`src/service/<service>/v<version>/harness/{agent,workflow,tool,skill,mcp}`,
+the service's composed Harness definition, a standalone test, and one final
+`ServiceBuilder.mountHarness(...)` call. Later agents and workflows extend that
+definition. Every agent selects an explicit application-chosen model alias;
+bind the exact aliases through `ai.models` in application startup. Define
+service-resource authorization with
+`serviceBuilder.defineHarnessPolicy(definition, { agents, workflows })`; there
+is no `targets` wrapper. Consumers declare one address-first reference with
+`serviceBuilder.harnessTarget(contract)` before calling an agent or workflow.
+
+Providers, Skills, storage, `ai.sandbox: { adapter, policy }`,
+`ai.concurrency: { runs, modelCalls }`, durable queues, and artifact stores
+remain application-owned configuration. Resume a suspended run with
+`target.resume(descriptor).run(options)` or `.stream(options)`. Generated tests
+use strict `FakeModelProvider` fixtures with `textReply(...)` or
+`objectReply(...)`, followed by `assertExhausted()`. The generator does not add
+credentials, HTTP exposure, tools, Skills, or infrastructure authority
+implicitly.
+
+Generated applications link both the normal `purista` skill and the focused
+`purista-migration` skill from `@purista/core`. Use the migration skill only
+for an existing-project upgrade: it records the package and lockfile baseline,
+definitions, checks, rollout order, and rollback trigger rather than treating a
+release migration as ordinary feature work.
 
 ---
 
