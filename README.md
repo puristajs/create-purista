@@ -8,31 +8,31 @@ shared local blueprint engine in `@purista/cli`; this wrapper no longer clones
 templates or owns separate scaffold logic.
 
 ```sh
-npm create purista@3.0.0
+npm create purista@latest
 ```
 
 **OR with Bun**
 
 ```sh
-bun create purista@3.0.0
+bun create purista@latest
 ```
 
 **OR with Yarn**
 
 ```sh
-yarn create purista@3.0.0
+yarn create purista@latest
 ```
 
 **OR with pnpm**
 
 ```sh
-pnpm create purista@3.0.0
+pnpm create purista@latest
 ```
 
 You can also use non-interactive flags directly through the wrapper, for example:
 
 ```sh
-npm create purista@3.0.0 my-app -- --defaults --non-interactive
+npm create purista@latest my-app -- --defaults --non-interactive
 ```
 
 The wrapper uses the shared PURISTA CLI project generator. It does not accept
@@ -92,10 +92,20 @@ provider-neutral `@purista/harness` module under
 the service's composed Harness definition, a standalone test, and one final
 `ServiceBuilder.mountHarness(...)` call. Later agents and workflows extend that
 definition. Every agent selects an explicit application-chosen model alias;
-bind the exact aliases through `ai.models` in application startup. Providers,
-Skills, storage, sandbox, admission, queues, and artifact stores remain
-application-owned configuration. The generator does not add credentials, HTTP
-exposure, tools, Skills, or infrastructure authority implicitly.
+bind the exact aliases through `ai.models` in application startup. Define
+service-resource authorization with
+`serviceBuilder.defineHarnessPolicy(definition, { agents, workflows })`; there
+is no `targets` wrapper. Consumers declare one address-first reference with
+`serviceBuilder.harnessTarget(contract)` before calling an agent or workflow.
+
+Providers, Skills, storage, `ai.sandbox: { adapter, policy }`,
+`ai.concurrency: { runs, modelCalls }`, durable queues, and artifact stores
+remain application-owned configuration. Resume a suspended run with
+`target.resume(descriptor).run(options)` or `.stream(options)`. Generated tests
+use strict `FakeModelProvider` fixtures with `textReply(...)` or
+`objectReply(...)`, followed by `assertExhausted()`. The generator does not add
+credentials, HTTP exposure, tools, Skills, or infrastructure authority
+implicitly.
 
 Generated applications link both the normal `purista` skill and the focused
 `purista-migration` skill from `@purista/core`. Use the migration skill only
