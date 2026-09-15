@@ -87,6 +87,24 @@ describe('bundled create-purista artifact', () => {
 				],
 				{ cwd: target, encoding: 'utf8' },
 			)
+			execFileSync(
+				process.execPath,
+				[
+					puristaCliBin,
+					'add',
+					'workflow',
+					'echo',
+					'--service',
+					'ping',
+					'--service-version',
+					'1',
+					'--description',
+					'Echo one input through a Harness workflow',
+					'--defaults',
+					'--non-interactive',
+				],
+				{ cwd: target, encoding: 'utf8' },
+			)
 
 			const agentManifest = JSON.parse(readFileSync(join(target, 'package.json'), 'utf8'))
 			const agentSource = readFileSync(
@@ -95,6 +113,14 @@ describe('bundled create-purista artifact', () => {
 			)
 			const agentTest = readFileSync(
 				join(target, 'src/service/ping/v1/harness/agent/assistant/assistantAgent.test.ts'),
+				'utf8',
+			)
+			const workflowSource = readFileSync(
+				join(target, 'src/service/ping/v1/harness/workflow/echo/echoWorkflow.ts'),
+				'utf8',
+			)
+			const workflowTest = readFileSync(
+				join(target, 'src/service/ping/v1/harness/workflow/echo/echoWorkflow.test.ts'),
 				'utf8',
 			)
 			const harness = readFileSync(join(target, 'src/service/ping/v1/harness/pingHarness.ts'), 'utf8')
@@ -111,7 +137,11 @@ describe('bundled create-purista artifact', () => {
 			expect(agentTest).toContain("textReply('hello')")
 			expect(agentTest).toContain('provider.assertExhausted()')
 			expect(agentTest).not.toMatch(/enqueue(?:Text)?\(\{\s*(?:text|output):/)
+			expect(workflowSource).toContain("defineWorkflow('echo'")
+			expect(workflowTest).toContain('session.workflows.echo.run')
 			expect(harness).toContain('.addAgent(assistantAgent)')
+			expect(harness).toContain('.addWorkflow(echoWorkflow)')
+			expect([agentSource, workflowSource, harness].join('\n')).not.toMatch(/\.(?:define|build)\(\)/)
 			expect(service.match(/\.mountHarness\(/g)).toHaveLength(1)
 			expect(bootstrap).toContain('ai: {')
 			expect(bootstrap).toContain('models: {')
@@ -156,6 +186,7 @@ describe('bundled create-purista artifact', () => {
 		expect(artifact).toContain('src/service/<service>/v<version>/harness/{agent,workflow,tool,skill,mcp}')
 		expect(artifact).not.toMatch(/src\/harness|defineHarnessModule|getAgentQueueBuilder|ai\.model\b/i)
 		expect(artifact).toContain('ai.models')
-		expect(artifact).not.toMatch(/sandboxBinding|modelAdmission|targets:\s*\{/)
+		expect(artifact).toContain('storage, sandbox, concurrency')
+		expect(artifact).not.toMatch(/\badmission\b|sandboxBinding|modelAdmission|targets:\s*\{/)
 	})
 })
